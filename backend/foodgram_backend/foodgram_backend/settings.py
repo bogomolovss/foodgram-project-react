@@ -28,6 +28,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "djoser",
+    "users.apps.UsersConfig",
+    "tags.apps.TagsConfig",
 ]
 
 MIDDLEWARE = [
