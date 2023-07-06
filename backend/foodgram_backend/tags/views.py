@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from .mixins import ListRetrieveViewSet
+from .models import Tag
+from .serializers import TagSerializer
 
-# Create your views here.
+
+class TagViewset(ListRetrieveViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
