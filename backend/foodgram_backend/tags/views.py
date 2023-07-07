@@ -6,3 +6,4 @@ from .serializers import TagSerializer
 class TagViewset(ListRetrieveViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    pagination_class = None

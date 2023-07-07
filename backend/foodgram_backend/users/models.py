@@ -31,11 +31,14 @@ class User(AbstractUser):
         max_length=254,
         unique=True,
         null=False,
+        blank=False,
         verbose_name='email'
     )
 
     username = models.CharField(
         max_length=50,
+        null=False,
         blank=False,
+        unique=True,
         verbose_name='username'
     )

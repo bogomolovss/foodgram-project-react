@@ -5,7 +5,7 @@ class Tag(models.Model):
     name = models.CharField(
         max_length=200,
         blank=False,
-        verbose_name="Tag"
+        verbose_name="Name"
     )
     color = models.CharField(
         null=True,
@@ -17,3 +17,11 @@ class Tag(models.Model):
         unique=True,
         verbose_name="Slug"
     )
+
+    class Meta:
+        ordering = ['-id']
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
+
+    def __str__(self):
+        return self.name
