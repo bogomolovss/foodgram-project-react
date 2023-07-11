@@ -1,6 +1,6 @@
-from .mixins import ListRetrieveViewSet
-from .models import Tag
-from .serializers import TagSerializer
+from api.mixins import ListRetrieveViewSet
+from tags.models import Tag
+from api.tags.serializers import TagSerializer
 
 
 class TagViewset(ListRetrieveViewSet):

@@ -1,9 +1,9 @@
-from tags.mixins import ListRetrieveViewSet
 from ingredients.models import Ingredient
-from ingredients.serializers import IngredientSerializer
+from api.ingredients.serializers import IngredientSerializer
+from api.mixins import ListRetrieveViewSet
 
 
-class TagViewset(ListRetrieveViewSet):
+class IngredientViewset(ListRetrieveViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     pagination_class = None
