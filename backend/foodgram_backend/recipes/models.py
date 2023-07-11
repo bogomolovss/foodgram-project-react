@@ -17,7 +17,7 @@ class Recipe(models.Model):
         verbose_name="Name"
     )
     image = models.ImageField(
-        upload_to="recipes/images/",
+        upload_to="recipes/",
         null=True,
         default=None,
         blank=True
