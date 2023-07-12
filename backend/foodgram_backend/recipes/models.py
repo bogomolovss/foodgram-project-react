@@ -85,3 +85,20 @@ class ShoppingCart(models.Model):
                 fields=['user', 'recipe'],
                 name='UserRecipe in shopping cart is unique')
         ]
+
+
+class Follow(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="follower",
+        verbose_name="User"
+    )
+    following = models.ForeignKey(
+        User,
+        related_name='following',
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        unique_together = ('user', 'following',)
