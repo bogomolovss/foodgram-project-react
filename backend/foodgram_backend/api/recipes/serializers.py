@@ -2,10 +2,10 @@ import base64
 
 from rest_framework import serializers
 from django.core.files.base import ContentFile
-from recipes.models import Recipe, Follow, ShoppingCart, Favorite
+from recipes.models import (
+    Recipe, Follow, ShoppingCart, Favorite, IngredientAmount)
 
 from api.tags.serializers import TagSerializer
-from api.ingredients.serializers import IngredientSerializer
 
 
 class Base64ImageField(serializers.ImageField):
@@ -19,10 +19,23 @@ class Base64ImageField(serializers.ImageField):
         return super().to_internal_value(data)
 
 
+class IngredientAmountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IngredientAmount
+        fields = ('ingredient', 'amount')
+
+
 class RecipeSerializer(serializers.ModelSerializer):
     image = Base64ImageField(required=False, allow_null=True)
     tags = TagSerializer(many=True, read_only=True)
-    ingredients = IngredientSerializer(many=True, read_only=True)
+    ingredients = IngredientAmountSerializer(
+        many=True,
+        read_only=True,
+        source="ingredient_amount"
+    )
+
+    is_favorited = serializers.SerializerMethodField()
+    is_in_shopping_cart = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
@@ -30,6 +43,21 @@ class RecipeSerializer(serializers.ModelSerializer):
             'author', 'name', 'image',
             'description', 'ingredients', 'tags', 'cooking_time'
         )
+
+    def get_is_favorited(self, obj):
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return Recipe.objects.filter(favorites__user=user, id=obj.id).exists()
+
+    def get_is_in_shopping_cart(self, obj):
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return Recipe.objects.filter(
+            cart__user == user,
+            id=obj.id
+        ).exists()
 
 
 class FollowSerializer(serializers.ModelSerializer):

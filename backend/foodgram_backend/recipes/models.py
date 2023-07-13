@@ -17,7 +17,7 @@ class Recipe(models.Model):
         verbose_name="Name"
     )
     image = models.ImageField(
-        upload_to="recipes/",
+        upload_to="recipes/images/",
         null=True,
         default=None,
         blank=True
@@ -25,6 +25,7 @@ class Recipe(models.Model):
     description = models.TextField(verbose_name="Description")
     ingredients = models.ManyToManyField(
         Ingredient,
+        through="IngredientAmount",
         verbose_name="Ingredients"
     )
     tags = models.ManyToManyField(
@@ -43,13 +44,36 @@ class Recipe(models.Model):
         verbose_name_plural = 'Рецепты'
 
 
+class IngredientAmount(models.Model):
+    ingredient = models.ForeignKey(
+        Ingredient,
+        on_delete=models.CASCADE
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name="ingredient_amount"
+    )
+    amount = models.PositiveIntegerField(
+        validators=[MinValueValidator(
+            1, message='Минимальное кол-во = 1'
+        )])
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['ingredient', 'recipe',],
+                name='Ingredient and Recipe in IngredientAmount is unique')
+        ]
+
+
 class Favorite(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="favorite",
         verbose_name="User",
-    ),
+    )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
@@ -60,7 +84,7 @@ class Favorite(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'recipe'],
+                fields=['user', 'recipe',],
                 name='UserRecipe in favorite is unique')
         ]
 
@@ -101,4 +125,8 @@ class Follow(models.Model):
     )
 
     class Meta:
-        unique_together = ('user', 'following',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'following'],
+                name='UserFollowing in following is unique')
+        ]
