@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from api.tags.views import TagViewset
 from api.ingredients.views import IngredientViewset
 from api.recipes.views import RecipeViewset
+from api.users.views import CustomUserViewSet
 
 router = DefaultRouter()
 
@@ -22,6 +23,9 @@ router.register(
     viewset=RecipeViewset,
     basename='recipe'
 )
+router.register('users', CustomUserViewSet)
+
 urlpatterns = [
     path('', include(router.urls)),
+    path('auth/', include('djoser.urls.authtoken')),
 ]

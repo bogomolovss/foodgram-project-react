@@ -7,24 +7,14 @@ class User(AbstractUser):
         max_length=50,
         blank=False,
         verbose_name="name",
+        null=False
     )
 
     second_name = models.CharField(
         max_length=50,
         blank=False,
-        verbose_name='surname'
-    )
-
-    class UserRole(models.TextChoices):
-        admin = "admin"
-        moderator = "moderator"
-        user = "user"
-
-    role = models.CharField(
-        max_length=150,
-        choices=UserRole.choices,
-        default="user",
-        verbose_name="role",
+        verbose_name='surname',
+        null=False
     )
 
     email = models.EmailField(
