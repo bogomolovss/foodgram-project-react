@@ -2,7 +2,7 @@ from djoser.views import UserViewSet
 from api.users.serializers import CustomUserSerializer
 from users.models import User
 from recipes.models import Follow
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
@@ -11,7 +11,6 @@ from api.recipes.serializers import FollowSerializer
 
 
 class CustomUserViewSet(UserViewSet):
-    permission_classes = (AllowAny,)
     serializer_class = CustomUserSerializer
     queryset = User.objects.all()
 
