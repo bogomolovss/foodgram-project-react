@@ -1,7 +1,7 @@
-from ingredients.models import Ingredient
 from api.ingredients.serializers import IngredientSerializer
 from api.mixins import ListRetrieveViewSet
 from api.permissons import IsAdminOrReadOnly
+from ingredients.models import Ingredient
 
 
 class IngredientViewset(ListRetrieveViewSet):

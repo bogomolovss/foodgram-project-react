@@ -1,7 +1,7 @@
 from api.mixins import ListRetrieveViewSet
-from tags.models import Tag
-from api.tags.serializers import TagSerializer
 from api.permissons import IsAdminOrReadOnly
+from api.tags.serializers import TagSerializer
+from tags.models import Tag
 
 
 class TagViewset(ListRetrieveViewSet):
