@@ -3,9 +3,10 @@ from recipes.models import Recipe, Favorite, ShoppingCart
 from api.recipes.serializers import (
     RecipeSerializer, FollowSerializer, RecipeSerializerLite
 )
+from api.permissons import IsAuthorOrReadOnlyPermission
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
 
@@ -13,6 +14,7 @@ from rest_framework.generics import get_object_or_404
 class RecipeViewset(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
+    permission_classes = (IsAuthorOrReadOnlyPermission,)
 
     @action(
         methods=['POST', 'DELETE'],
@@ -67,13 +69,3 @@ class RecipeViewset(viewsets.ModelViewSet):
             )
         shopping_cart.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class FollowViewset(viewsets.ModelViewSet):
-    serializer_class = FollowSerializer
-
-    def perform_create(self, serializer: FollowSerializer):
-        serializer.save(user=self.request.user)
-
-    def get_queryset(self):
-        return self.request.user.follower.all()
