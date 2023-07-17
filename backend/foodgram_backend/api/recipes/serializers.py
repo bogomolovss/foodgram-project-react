@@ -5,7 +5,7 @@ from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 from api.tags.serializers import TagSerializer
 from recipes.models import (
-    Follow, IngredientAmount, Recipe, Ingredient, Tag
+    Follow, IngredientAmount, Recipe, Ingredient
 )
 from api.users.serializers import CustomUserSerializer
 from rest_framework.validators import UniqueTogetherValidator
@@ -142,15 +142,44 @@ class RecipeSerializer(serializers.ModelSerializer):
         return instance
 
 
-class FollowSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Follow
-        fields = ('user', 'following')
-
-
 class RecipeSerializerLite(serializers.ModelSerializer):
     image = Base64ImageField(required=False, allow_null=True)
 
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
+
+
+class FollowSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField(source='following.id')
+    email = serializers.ReadOnlyField(source='following.email')
+    username = serializers.ReadOnlyField(source='following.username')
+    first_name = serializers.ReadOnlyField(source='following.first_name')
+    last_name = serializers.ReadOnlyField(source='following.last_name')
+    is_subscribed = serializers.SerializerMethodField()
+    recipes_count = serializers.SerializerMethodField()
+    recipes = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Follow
+        fields = (
+            'id', 'email',
+            'username', 'first_name',
+            'last_name', 'is_subscribed',
+            'recipes_count', 'recipes'
+        )
+
+    def get_is_subscribed(self, obj):
+        return Follow.objects.filter(
+            user=obj.user, following=obj.following).exists()
+
+    def get_recipes_count(self, obj):
+        return Recipe.objects.filter(author=obj.following).count()
+
+    def get_recipes(self, obj):
+        request = self.context.get('request')
+        limit = request.GET.get('recipes_limit')
+        queryset = Recipe.objects.filter(author=obj.following)
+        if limit:
+            queryset = queryset[0:int(limit)]
+        return RecipeSerializerLite(queryset, many=True).data
