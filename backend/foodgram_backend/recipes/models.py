@@ -23,7 +23,7 @@ class Recipe(models.Model):
         default=None,
         blank=True
     )
-    description = models.TextField(verbose_name="Description")
+    text = models.TextField(verbose_name="Description")
     ingredients = models.ManyToManyField(
         Ingredient,
         through="IngredientAmount",
