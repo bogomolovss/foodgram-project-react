@@ -4,9 +4,10 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from api.pagination import CustomPageNumberPagination
 from api.permissons import IsAuthorOrReadOnlyPermission
-from api.recipes.serializers import (FollowSerializer, RecipeSerializer,
-                                     RecipeSerializerLite)
+from api.recipes.serializers import (
+    RecipeSerializer, RecipeSerializerLite)
 from recipes.models import Favorite, Recipe, ShoppingCart
 
 
@@ -14,6 +15,7 @@ class RecipeViewset(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     permission_classes = (IsAuthorOrReadOnlyPermission,)
+    pagination_class = CustomPageNumberPagination
 
     @action(
         methods=['POST', 'DELETE'],
@@ -68,3 +70,16 @@ class RecipeViewset(viewsets.ModelViewSet):
             )
         shopping_cart.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(
+        methods=['GET'],
+        detail=False,
+        permission_classes=[IsAuthenticated]
+    )
+    def download_shopping_cart(self, request):
+        user = request.user
+        if ShoppingCart.objects.filter(user=user).count() == 0:
+            return Response(
+                data={'error': 'Your shopping cart is empty'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
