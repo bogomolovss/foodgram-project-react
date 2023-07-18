@@ -23,7 +23,11 @@ router.register(
     viewset=RecipeViewset,
     basename='recipe'
 )
-router.register('users', CustomUserViewSet)
+router.register(
+    prefix='users',
+    viewset=CustomUserViewSet,
+    basename='user'
+)
 
 urlpatterns = [
     path('', include(router.urls)),
