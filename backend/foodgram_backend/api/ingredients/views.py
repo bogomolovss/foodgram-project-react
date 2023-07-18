@@ -1,8 +1,9 @@
+from rest_framework.filters import SearchFilter
+
 from api.ingredients.serializers import IngredientSerializer
 from api.mixins import ListRetrieveViewSet
 from api.permissons import IsAdminOrReadOnly
 from ingredients.models import Ingredient
-from rest_framework.filters import SearchFilter
 
 
 class IngredientViewset(ListRetrieveViewSet):

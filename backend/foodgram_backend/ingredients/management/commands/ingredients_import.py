@@ -1,8 +1,10 @@
-from django.core.management.base import BaseCommand
-from ingredients.models import Ingredient
-from foodgram_backend.settings import BASE_DIR
 import csv
 import os
+
+from django.core.management.base import BaseCommand
+
+from foodgram_backend.settings import BASE_DIR
+from ingredients.models import Ingredient
 
 
 # This format used for scalability in future
