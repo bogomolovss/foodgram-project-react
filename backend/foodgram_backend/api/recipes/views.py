@@ -9,6 +9,8 @@ from api.permissons import IsAuthorOrReadOnlyPermission
 from api.recipes.serializers import (
     RecipeSerializer, RecipeSerializerLite)
 from recipes.models import Favorite, Recipe, ShoppingCart
+from api.filters import RecipeFilter
+from django_filters import rest_framework as filters
 
 
 class RecipeViewset(viewsets.ModelViewSet):
@@ -16,6 +18,8 @@ class RecipeViewset(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     permission_classes = (IsAuthorOrReadOnlyPermission,)
     pagination_class = CustomPageNumberPagination
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_class = RecipeFilter
 
     @action(
         methods=['POST', 'DELETE'],
