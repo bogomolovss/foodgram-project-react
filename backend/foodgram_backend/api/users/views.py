@@ -1,13 +1,12 @@
+from api.recipes.serializers import FollowSerializer
+from api.users.serializers import CustomUserSerializer
 from djoser.views import UserViewSet
+from recipes.models import Follow
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
-from api.recipes.serializers import FollowSerializer
-from api.users.serializers import CustomUserSerializer
-from recipes.models import Follow
 from users.models import User
 
 
