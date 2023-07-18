@@ -62,7 +62,7 @@ class IngredientAmount(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['ingredient', 'recipe',],
+                fields=['ingredient', 'recipe'],
                 name='Ingredient and Recipe in IngredientAmount is unique')
         ]
 
@@ -84,7 +84,7 @@ class Favorite(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'recipe',],
+                fields=['user', 'recipe'],
                 name='UserRecipe in favorite is unique')
         ]
 
