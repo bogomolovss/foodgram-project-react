@@ -88,6 +88,9 @@ class Favorite(models.Model):
                 name='UserRecipe in favorite is unique')
         ]
 
+    def __str__(self):
+        return 'favorite'
+
 
 class ShoppingCart(models.Model):
     user = models.ForeignKey(
@@ -109,6 +112,9 @@ class ShoppingCart(models.Model):
                 fields=['user', 'recipe'],
                 name='UserRecipe in shopping cart is unique')
         ]
+
+    def __str__(self):
+        return 'shopping cart'
 
 
 class Follow(models.Model):
