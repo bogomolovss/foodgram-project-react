@@ -22,18 +22,17 @@ class CustomUserViewSet(UserViewSet):
     def subscribe(self, request, id=None):
         user = request.user
         user_to = get_object_or_404(User, id=id)
+        if user == user_to:
+            return Response(
+                data={'errors': 'You cant do this operation on yourself!'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         if request.method == 'POST':
-            if user == user_to:
-                return Response(
-                    data={'errors': 'You cant subscribe on yourself!'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
             if Follow.objects.filter(user=user, following=user_to).exists():
                 return Response(
                     data={'errors': 'You already subscribed on this user!'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-
             follow = Follow.objects.create(user=user, following=user_to)
             serializer = FollowSerializer(
                 follow, context={'request': request}
@@ -41,11 +40,6 @@ class CustomUserViewSet(UserViewSet):
             return Response(
                 data=serializer.data,
                 status=status.HTTP_201_CREATED
-            )
-        if user == user_to:
-            return Response(
-                data={'errors': 'You cant unsubscribe yourself!'},
-                status=status.HTTP_400_BAD_REQUEST
             )
         follow = Follow.objects.filter(user=user, following=user_to)
         if not follow.exists():
