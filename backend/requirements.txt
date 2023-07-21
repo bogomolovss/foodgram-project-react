@@ -9,7 +9,7 @@ django-filter==23.2
 django-templated-mail==1.1.1
 django-environ==0.10.0
 djangorestframework==3.14.0
-djangorestframework-simplejwt==6.0
+djangorestframework-simplejwt==5.0.0
 djoser==2.2.0
 idna==3.4
 iniconfig==2.0.0
