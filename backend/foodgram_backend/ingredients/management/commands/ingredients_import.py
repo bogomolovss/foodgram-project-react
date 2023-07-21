@@ -9,18 +9,16 @@ from ingredients.models import Ingredient
 # This format used for scalability in future
 # (if we want) to import more than just Ingredients
 class Command(BaseCommand):
-    help = 'Load data from static_folder into DB'
+    help = "Load data from static_folder into DB"
 
     def handle(self, *args, **options):
-        fields_ingredients = ('name', 'measurement_unit')
+        fields_ingredients = ("name", "measurement_unit")
 
-        files = {
-            'ingredients.csv': (Ingredient, fields_ingredients)
-        }
+        files = {"ingredients.csv": (Ingredient, fields_ingredients)}
 
         for csv_file, (model, fieldnames) in files.items():
-            file_path = os.path.join(options['path'], csv_file)
-            with open(file_path, mode='r', encoding="utf-8") as file_t:
+            file_path = os.path.join(options["path"], csv_file)
+            with open(file_path, mode="r", encoding="utf-8") as file_t:
                 reader = csv.DictReader(file_t)
                 if fieldnames:
                     reader.fieldnames = fieldnames
@@ -35,9 +33,9 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-p',
-            '--path',
-            action='store',
-            default=BASE_DIR / 'static/data',
-            help='Change path to import files'
+            "-p",
+            "--path",
+            action="store",
+            default=BASE_DIR / "static/data",
+            help="Change path to import files",
         )

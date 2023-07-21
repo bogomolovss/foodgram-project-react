@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", "key")
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["51.250.110.87", "127.0.0.1", "bogomolovss.ru", "localhost"]
 
@@ -26,11 +26,13 @@ INSTALLED_APPS = [
     "ingredients.apps.IngredientsConfig",
     "recipes.apps.RecipesConfig",
     "django_filters",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -104,6 +106,17 @@ USE_I18N = True
 
 USE_TZ = True
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://51.250.110.87",
+    "http://51.250.110.87",
+    "https://127.0.0.1",
+    "http://127.0.0.1",
+    "http://bogomolovss.ru",
+    "https://bogomolovss.ru",
+]
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_URLS_REGEX = r"^/api/.*$"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

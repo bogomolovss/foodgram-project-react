@@ -30,3 +30,4 @@ social-auth-core==4.4.2
 sqlparse==0.4.4
 urllib3==2.0.3
 webcolors==1.13
+django-cors-headers==4.2.0
