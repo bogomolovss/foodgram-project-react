@@ -1,18 +1,14 @@
 import os
-import environ
 from pathlib import Path
-
-env = environ.Env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = os.getenv("SECRET_KEY", "key")
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['51.250.110.87', '127.0.0.1', 'bogomolovss.ru', 'localhost']
+ALLOWED_HOSTS = ["51.250.110.87", "127.0.0.1", "bogomolovss.ru", "localhost"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -69,11 +65,11 @@ WSGI_APPLICATION = "foodgram_backend.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("POSTGRES_DB"),
-        "USER": env("POSTGRES_USER"),
-        "PASSWORD": env("POSTGRES_PASSWORD"),
-        "HOST": env("DB_HOST"),
-        "PORT": env("DB_PORT"),
+        "NAME": os.getenv("POSTGRES_DB", "django"),
+        "USER": os.getenv("POSTGRES_USER", "django"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", ""),
+        "HOST": os.getenv("DB_HOST", ""),
+        "PORT": os.getenv("DB_PORT", 5432),
     }
 }
 
@@ -137,15 +133,15 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = "users.User"
 
 DJOSER = {
-    'LOGIN_FIELD': 'email',
-    'HIDE_USERS': False,
-    'SERIALIZERS': {
-        'user_create': 'api.users.serializers.CustomUserCreateSerializer',
-        'user': 'api.users.serializers.CustomUserSerializer',
-        'current_user': 'api.users.serializers.CustomUserSerializer',
+    "LOGIN_FIELD": "email",
+    "HIDE_USERS": False,
+    "SERIALIZERS": {
+        "user_create": "api.users.serializers.CustomUserCreateSerializer",
+        "user": "api.users.serializers.CustomUserSerializer",
+        "current_user": "api.users.serializers.CustomUserSerializer",
     },
-    'PERMISSIONS': {
-        'user': ('rest_framework.permissions.IsAuthenticated',),
-        'user_list': ('rest_framework.permissions.AllowAny',)
-    }
+    "PERMISSIONS": {
+        "user": ("rest_framework.permissions.IsAuthenticated",),
+        "user_list": ("rest_framework.permissions.AllowAny",),
+    },
 }

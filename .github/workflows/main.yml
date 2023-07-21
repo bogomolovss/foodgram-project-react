@@ -1,9 +1,9 @@
-name: Main Kittygram workflow
+name: Main Foodgram workflow
 
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   tests:
@@ -52,48 +52,40 @@ jobs:
     needs: tests
     steps:
       - name: Check out the repo
-        # Получение исходного кода из репозитория
         uses: actions/checkout@v3
       - name: Set up Docker Buildx
-        # Установка сборщика контейнеров Docker
         uses: docker/setup-buildx-action@v2
       - name: Login to Docker
-        # Авторизация на Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Push to DockerHub
-        # Одновременный билд и пуш образа в Docker Hub
+        # Build and push image on DockerHub
         uses: docker/build-push-action@v4
         with:
-          # Параметр context: ./backend/ указывает, что нужный Dockerfile
-          # находится в ./backend/
           context: ./backend/
-          # Параметр push: true указывает, что образ нужно не только собрать,
-          # но и отправить на Docker Hub
           push: true
-          tags: bogomolovss/kittygram_backend:latest
+          tags: bogomolovss/foodgram_backend:latest
   frontend_tests:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
       - name: Set up nodeJS
-        # Это готовый воркфлоу для установки Node.js на раннер
+        # workflow for installing node.js
         uses: actions/setup-node@v3
         with:
-          # Это параметр воркфлоу, указывающий нужную версию Node.js
           node-version: 18
 
       - name: Install dependencies
-        # Эта команда устанавливает зависимости для фронтенда
+        # This command set dependecies for frontend
         run: |
           cd frontend/
           npm ci
 
       - name: Test frontend
-        # Запускаем тесты
+        # Run tests
         run: |
           cd frontend/
           npm run test
@@ -116,7 +108,7 @@ jobs:
         with:
           context: ./frontend/
           push: true
-          tags: bogomolovss/kittygram_frontend:latest
+          tags: bogomolovss/foodgram_frontend:latest
   build_gateway_and_push_to_docker_hub:
     name: Push gateway Docker image to DockerHub
     runs-on: ubuntu-latest
@@ -135,7 +127,7 @@ jobs:
         with:
           context: ./nginx/
           push: true
-          tags: bogomolovss/kittygram_gateway:latest
+          tags: bogomolovss/foodgram_gateway:latest
   deploy:
     runs-on: ubuntu-latest
     needs:
@@ -148,14 +140,13 @@ jobs:
       # Копируем docker-compose.production.yml на продакшен-сервер
       - name: Copy docker-compose.yml via ssh
         uses: appleboy/scp-action@master
-        # Передаём параметры для action appleboy/scp-action:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           source: "docker-compose.production.yml"
-          target: "kittygram"
+          target: "foodgram"
       - name: Executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
         with:
@@ -164,7 +155,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
-            cd kittygram
+            cd foodgram
             sudo docker compose -f docker-compose.production.yml pull
             sudo docker compose -f docker-compose.production.yml down
             sudo docker compose -f docker-compose.production.yml up -d
