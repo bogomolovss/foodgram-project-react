@@ -4,10 +4,10 @@ from recipes.models import Favorite, Follow, Recipe, ShoppingCart
 
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('name', 'author', 'count_favorites')
-    list_filter = ('author__username', 'name', 'tags__name')
+    list_filter = ('author', 'name', 'tags')
 
     def count_favorites(self, obj):
-        return obj.favorites.count()
+        return obj.favorite.count()
 
 
 admin.site.register(ShoppingCart)

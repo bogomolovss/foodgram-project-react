@@ -18,9 +18,7 @@ class Recipe(models.Model):
     )
     image = models.ImageField(
         upload_to="recipes/",
-        null=True,
-        default=None,
-        blank=True
+        default=None
     )
     text = models.TextField(verbose_name="Description")
     ingredients = models.ManyToManyField(
