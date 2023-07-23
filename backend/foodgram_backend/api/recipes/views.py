@@ -2,7 +2,7 @@ from api.filters import RecipeFilter
 from api.pagination import CustomPageNumberPagination
 from api.permissons import IsAuthorOrReadOnlyPermission
 from api.recipes.serializers import RecipeSerializer, RecipeSerializerLite
-from django.http import HttpResponse
+from django.http import FileResponse
 from django_filters import rest_framework as filters
 from recipes.models import Favorite, IngredientAmount, Recipe, ShoppingCart
 from rest_framework import status, viewsets
@@ -45,24 +45,33 @@ class RecipeViewset(viewsets.ModelViewSet):
         permission_classes=[IsAuthenticated]
     )
     def download_shopping_cart(self, request):
-        filename = 'cart.txt'
-        final_list = {}
+        shopping_list = {}
         ingredients = IngredientAmount.objects.filter(
             recipe__cart__user=request.user).values_list(
             'ingredient__name', 'ingredient__measurement_unit',
             'amount')
         for item in ingredients:
             name = item[0]
-            if name not in final_list:
-                final_list[name] = {
+            if name not in shopping_list:
+                shopping_list[name] = {
                     'measurement_unit': item[1],
                     'amount': item[2]
                 }
             else:
-                final_list[name]['amount'] += item[2]
-        response = HttpResponse(content_type='text/plain; charset=UTF-8')
+                shopping_list[name]['amount'] += item[2]
+        file_content = []
+        for x in enumerate(shopping_list.items()):
+            amount = x[1][1].get('amount')
+            measurement_unit = x[1][1].get('measurement_unit')
+            file_content.append(
+                f'{x[0]+1} - {x[1][0]} - {amount}{measurement_unit}\n'
+            )
+        response = FileResponse(
+            file_content,
+            content_type='text/plain; charset=UTF-8'
+        )
         response['Content-Disposition'] = (
-            'attachment; filename={0}'.format(filename))
+            'attachment; filename="{file}.txt"')
         return response
 
     # universal method for post/delete Favorite or ShoppingCart object
