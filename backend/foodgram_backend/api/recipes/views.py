@@ -18,7 +18,10 @@ class RecipeViewset(viewsets.ModelViewSet):
     permission_classes = (IsAuthorOrReadOnlyPermission,)
     pagination_class = CustomPageNumberPagination
     filter_backends = (filters.DjangoFilterBackend,)
-    filter_class = RecipeFilter
+    filterset_class = RecipeFilter
+    filterset_fields = (
+        'tags', 'author', 'is_favorited', 'is_in_shopping_cart'
+    )
 
     @action(
         methods=['POST', 'DELETE'],
